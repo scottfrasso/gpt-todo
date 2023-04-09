@@ -26,13 +26,16 @@ function App() {
     const fetchData = async () => {
       let todoResults: TodoSuggestionResponse | undefined
       try {
-        const response = await fetch(`${import.meta.env.VITE_SOME_KEY}/todo`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/todo`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
           },
-          body: JSON.stringify(postData),
-        })
+        )
 
         if (!response.ok) {
           toast.error('Something went wrong, sorry I cant help right now.')
