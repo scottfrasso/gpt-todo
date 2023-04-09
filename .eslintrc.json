@@ -1,0 +1,33 @@
+{
+  "rules": {
+    "jsx-quotes": [2, "prefer-single"],
+    "indent": ["error", 2],
+    "no-tabs": 0,
+    "max-len": [
+      "warn",
+      {
+        "code": 200,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "no-plusplus": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "import/prefer-default-export": "off",
+    "react/require-default-props": 0,
+    "no-await-in-loop": 0, // Maybe turn this off later
+    "@typescript-eslint/ban-ts-comment": 0, // Turn this off later
+    "no-console": 0, // turn off later
+    "no-return-await": "off",
+    "semi": "off"
+  }
+}

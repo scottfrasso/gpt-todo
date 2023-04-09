@@ -1,0 +1,12 @@
+{
+  "name": "gpt-todo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "author": "Scott Frasso <scottfrasso@gmail.com>",
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ]
+}
