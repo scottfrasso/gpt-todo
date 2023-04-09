@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build:front-end": "yarn workspace @gpt-todo/dtos build && yarn workspace @gpt-todo/front-end build"
+  },
   "author": "Scott Frasso <scottfrasso@gmail.com>",
   "workspaces": [
     "apps/*",

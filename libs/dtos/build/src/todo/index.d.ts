@@ -1,8 +1,8 @@
 export type TodoSuggestionRequest = {
-  text: string
-}
+    text: string;
+};
 export type TodoSuggestionResponse = {
-  text: string
-  suggestions: string[]
-  inappropriate: boolean
-}
+    text: string;
+    suggestions: string[];
+    inappropriate: boolean;
+};
