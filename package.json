@@ -8,5 +8,8 @@
   "workspaces": [
     "apps/*",
     "libs/*"
-  ]
+  ],
+  "devDependencies": {
+    "gts": "^3.1.1"
+  }
 }

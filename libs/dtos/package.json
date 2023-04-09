@@ -1,0 +1,14 @@
+{
+  "name": "@gpt-todo/dtos",
+  "version": "1.0.0",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
