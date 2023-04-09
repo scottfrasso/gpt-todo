@@ -1,6 +1,9 @@
 // src/App.tsx
 import { useState, ChangeEvent, FormEvent } from 'react'
+import toast from 'react-hot-toast'
 import styled from '@emotion/styled'
+
+import { TodoSuggestionResponse } from '@gpt-todo/dtos'
 
 type TodoItem = {
   id: number
@@ -43,6 +46,7 @@ const Checkbox = styled.input`
 `
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false)
   const [todos, setTodos] = useState<TodoItem[]>([])
   const [completedTodos, setCompletedTodos] = useState<TodoItem[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -50,9 +54,61 @@ function App() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (inputValue.trim()) {
-      setTodos([...todos, { id: new Date().getTime(), text: inputValue }])
+      toast.error('Try writing something in the input field first!')
+    }
+
+    const postData = { text: inputValue.trim() }
+
+    const fetchData = async () => {
+      let todoResults: TodoSuggestionResponse | undefined
+      try {
+        const response = await fetch('http://localhost:3000/todo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData),
+        })
+
+        if (!response.ok) {
+          toast.error('Something went wrong, sorry I cant help right now.')
+          throw new Error(`Failed to create todo item: ${response.status}`)
+        }
+
+        todoResults = (await response.json()) as TodoSuggestionResponse
+      } catch (error) {
+        toast.error(
+          'Something went wrong, sorry I cant help right now. Your request might have been innapropriate.',
+        )
+        console.error(error)
+        return
+      }
+
+      if (!todoResults) {
+        toast.error('Something went wrong, sorry I cant help right now.')
+        return
+      }
+
+      if (todoResults.inappropriate) {
+        toast.error('Sorry, I cant help you with that. Maybe try a therapist')
+        return
+      }
+
+      const resultingTodoList = todoResults.suggestions.map((suggestion) => ({
+        id: new Date().getTime(),
+        text: suggestion,
+      }))
+
+      setTodos(resultingTodoList)
       setInputValue('')
     }
+
+    setIsLoading(true)
+    fetchData()
+      .catch((error) => console.error(error))
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -69,15 +125,15 @@ function App() {
 
   return (
     <Container>
-      <h1>Todo List</h1>
+      <h1>Todo List Generator</h1>
       <form onSubmit={handleSubmit}>
         <Input
           type='text'
           value={inputValue}
           onChange={handleChange}
-          placeholder='Add a new todo item'
+          placeholder='Build a model airplane...'
         />
-        <Button type='submit'>Add</Button>
+        <Button type='submit'>Help me</Button>
       </form>
       <List>
         {todos.map((todo) => (

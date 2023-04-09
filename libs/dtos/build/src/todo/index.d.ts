@@ -1,7 +1,8 @@
-export declare type TodoSuggestionRequest = {
-    text: string;
-};
-export declare type TodoSuggestionResponse = {
-    text: string;
-    suggestions: string[];
-};
+export type TodoSuggestionRequest = {
+  text: string
+}
+export type TodoSuggestionResponse = {
+  text: string
+  suggestions: string[]
+  inappropriate: boolean
+}

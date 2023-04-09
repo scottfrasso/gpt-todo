@@ -5,4 +5,5 @@ export type TodoSuggestionRequest = {
 export type TodoSuggestionResponse = {
   text: string
   suggestions: string[]
+  inappropriate: boolean
 }

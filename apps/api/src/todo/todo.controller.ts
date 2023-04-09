@@ -4,7 +4,7 @@ import { TodoSuggestionRequest, TodoSuggestionResponse } from '@gpt-todo/dtos'
 
 import { TodoService } from './todo.service'
 
-@Controller()
+@Controller('todo')
 export class TodoController {
   constructor(readonly todoService: TodoService) {}
 
