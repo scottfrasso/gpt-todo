@@ -9,6 +9,10 @@ import { TodoSuggestionResponse } from '@gpt-todo/dtos'
 import { Button, Checkbox, Container, Input, List, ListItem } from './style'
 import { TodoItem } from './types'
 
+// Override the base URL if we are running in development mode
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL || 'https://api-2qnlzue5bq-uc.a.run.app'
+
 function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [todos, setTodos] = useState<TodoItem[]>([])
@@ -26,16 +30,13 @@ function App() {
     const fetchData = async () => {
       let todoResults: TodoSuggestionResponse | undefined
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/todo`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData),
+        const response = await fetch(`${baseURL}/todo`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        )
+          body: JSON.stringify(postData),
+        })
 
         if (!response.ok) {
           toast.error('Something went wrong, sorry I cant help right now.')
