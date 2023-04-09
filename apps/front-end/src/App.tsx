@@ -26,6 +26,8 @@ function App() {
     const fetchData = async () => {
       let todoResults: TodoSuggestionResponse | undefined
       try {
+        //https://api-2qnlzue5bq-uc.a.run.app/todo
+        //http://localhost:3000/todo
         const response = await fetch(
           'https://api-2qnlzue5bq-uc.a.run.app/todo',
           {
