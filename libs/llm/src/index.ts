@@ -9,14 +9,17 @@ import { getLogger } from '@gpt-todo/logging'
 
 const logger = getLogger('chat-gpt')
 
+/**
+ * Get a TODO list from OpenAI
+ * @param prompt The prompt to give to OpenAI
+ * @returns The TODO list suggestions response
+ */
 export async function getTODOList(
   prompt: string,
 ): Promise<TodoSuggestionResponse> {
-  // OpenAI configuration creation
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   })
-  // OpenAI instance creation
   const openai = new OpenAIApi(configuration)
 
   let response: CreateChatCompletionResponse | undefined
@@ -84,6 +87,7 @@ export async function getTODOList(
 
   let result: ResultObject | undefined
   try {
+    // TODO: I should do a better job parsing/validating this because Chat GPT could return anything
     result = JSON.parse(message) as ResultObject
   } catch (error) {
     logger.error('Error parsing message from OpenAI', message)
