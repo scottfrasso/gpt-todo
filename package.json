@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "build": "yarn workspace @gpt-todo/dtos build && yarn workspace @gpt-todo/llm build && yarn workspace @gpt-todo/api build && yarn workspace @gpt-todo/front-end build",
     "build:front-end": "yarn workspace @gpt-todo/dtos build && yarn workspace @gpt-todo/front-end build"
   },
   "author": "Scott Frasso <scottfrasso@gmail.com>",

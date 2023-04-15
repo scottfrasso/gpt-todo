@@ -68,7 +68,7 @@ export async function getTODOList(
     throw new Error('Error calling out to Chat GPT')
   }
 
-  if (!response) {
+  if (!response || !response.choices.length) {
     throw new Error('No response from OpenAI')
   }
 

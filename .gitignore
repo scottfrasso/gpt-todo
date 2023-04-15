@@ -26,6 +26,7 @@ dist-ssr
 
 **/**/node_modules/
 **/**/dist/
+**/**/build/
 **/**/tmp/
 **/**/.env
 
