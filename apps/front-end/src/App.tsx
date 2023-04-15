@@ -41,22 +41,15 @@ function App() {
     const postData = { text: usersInput }
 
     const fetchData = async () => {
-      let todoResults: TodoSuggestionResponse | undefined
+      let response: Response
       try {
-        const response = await fetch(`${baseURL}/todo`, {
+        response = await fetch(`${baseURL}/todo`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(postData),
         })
-
-        if (!response.ok) {
-          toast.error('Something went wrong, sorry I cant help right now.')
-          throw new Error(`Failed to create todo item: ${response.status}`)
-        }
-
-        todoResults = (await response.json()) as TodoSuggestionResponse
       } catch (error) {
         toast.error(
           'Something went wrong, sorry I cant help right now. Your request might have been innapropriate.',
@@ -65,6 +58,20 @@ function App() {
         return
       }
 
+      if (!response.ok) {
+        const errorMessage = (await response.json()) as {
+          statusCode: number
+          message?: string
+          error: string
+        }
+        toast.error(
+          errorMessage.message ||
+            'Something went wrong, sorry I cant help right now.',
+        )
+        throw new Error(`Failed to create todo item: ${response.status}`)
+      }
+
+      const todoResults: TodoSuggestionResponse = await response.json()
       if (!todoResults) {
         toast.error('Something went wrong, sorry I cant help right now.')
         return
@@ -79,10 +86,12 @@ function App() {
         setSarcasticResponse(undefined)
       }
 
-      const resultingTodoList = todoResults.suggestions.map((suggestion) => ({
-        id: uuid.v4(),
-        text: suggestion,
-      }))
+      const resultingTodoList = todoResults.suggestions.map(
+        (suggestion: string) => ({
+          id: uuid.v4(),
+          text: suggestion,
+        }),
+      )
 
       setTodos(resultingTodoList)
     }
