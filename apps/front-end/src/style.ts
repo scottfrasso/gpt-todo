@@ -34,3 +34,9 @@ export const ListItem = styled.li`
 export const Checkbox = styled.input`
   margin-right: 8px;
 `
+
+export const RedText = styled.span`
+  margin: 2rem;
+  font-size: 1.5rem;
+  color: red;
+`

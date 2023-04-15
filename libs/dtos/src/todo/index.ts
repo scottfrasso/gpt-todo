@@ -6,4 +6,5 @@ export type TodoSuggestionResponse = {
   text: string
   suggestions: string[]
   inappropriate: boolean
+  sarcasticResponse?: string
 }

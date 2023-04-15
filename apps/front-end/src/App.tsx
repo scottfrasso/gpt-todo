@@ -1,12 +1,13 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
 import CssLoader from './CssLoader'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
+import { TextField } from '@mui/material'
 
 import * as uuid from 'uuid'
 
 import { TodoSuggestionResponse } from '@gpt-todo/dtos'
 
-import { Button, Checkbox, Container, Input, List, ListItem } from './style'
+import { Button, Checkbox, Container, List, ListItem, RedText } from './style'
 import { TodoItem } from './types'
 
 // Override the base URL if we are running in development mode
@@ -18,14 +19,26 @@ function App() {
   const [todos, setTodos] = useState<TodoItem[]>([])
   const [completedTodos, setCompletedTodos] = useState<TodoItem[]>([])
   const [inputValue, setInputValue] = useState('')
+  const [previousInputValue, setPreviousInputValue] = useState('')
+  const [sarcasticResponse, setSarcasticResponse] = useState<
+    string | undefined
+  >(undefined)
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const usersInput = inputValue.trim()
+
     event.preventDefault()
-    if (inputValue.trim()) {
+    if (!usersInput) {
       toast.error('Try writing something in the input field first!')
+      return
     }
 
-    const postData = { text: inputValue.trim() }
+    if (usersInput === previousInputValue) {
+      toast.error('You already asked me to do that! And I gave you an answer!')
+      return
+    }
+
+    const postData = { text: usersInput }
 
     const fetchData = async () => {
       let todoResults: TodoSuggestionResponse | undefined
@@ -58,8 +71,12 @@ function App() {
       }
 
       if (todoResults.inappropriate) {
-        toast.error('Sorry, I cant help you with that. Maybe try a therapist')
-        return
+        setSarcasticResponse(
+          todoResults.sarcasticResponse ||
+            'Sorry, I cant help you with that. Maybe try a therapist',
+        )
+      } else {
+        setSarcasticResponse(undefined)
       }
 
       const resultingTodoList = todoResults.suggestions.map((suggestion) => ({
@@ -68,13 +85,14 @@ function App() {
       }))
 
       setTodos(resultingTodoList)
-      setInputValue('')
     }
 
+    setSarcasticResponse(undefined)
     setIsLoading(true)
     fetchData()
       .catch((error) => console.error(error))
       .finally(() => {
+        setPreviousInputValue(usersInput)
         setIsLoading(false)
       })
   }
@@ -91,23 +109,36 @@ function App() {
     }
   }
 
+  const hasAnyTodos = todos.length > 0 || completedTodos.length > 0
+  const hasAnyInputValue = inputValue.length === 0
+  const sameInputValue = inputValue === previousInputValue
+
   return (
     <Container>
-      <h1>Todo List Generator</h1>
+      <Toaster />
+      <h1>To do List Generator</h1>
       <form onSubmit={handleSubmit}>
-        <Input
-          type='text'
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          variant='outlined'
           value={inputValue}
           onChange={handleChange}
-          placeholder='Build a model airplane...'
+          placeholder='Build a model airplane'
           disabled={isLoading}
         />
-        <Button type='submit'>Help me</Button>
+        <Button
+          type='submit'
+          disabled={hasAnyInputValue || isLoading || sameInputValue}
+        >
+          Make my to do list
+        </Button>
       </form>
       {isLoading && <CssLoader size={80} color='#61dafb' />}
-      {!isLoading && (
+      {sarcasticResponse && <RedText>{sarcasticResponse}</RedText>}
+      {hasAnyTodos && (
         <>
-          <h2>To do</h2>
           <List>
             {todos.map((todo) => (
               <ListItem key={todo.id}>
@@ -119,9 +150,10 @@ function App() {
                 {todo.text}
                 <Button
                   onClick={() => moveToCompletedList(todo.id)}
+                  style={{ fontSize: '12px', padding: '2.5px' }}
                   disabled={isLoading}
                 >
-                  No Thank You
+                  X
                 </Button>
               </ListItem>
             ))}
